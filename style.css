@@ -1,12 +1,3 @@
-/* =========================================================
-   Skillinf Student Helpdesk: styles
-   Layout: one centered chat card (full-bleed on phones)
-   with header, chip rail, scrolling log and input bar.
-   Tailwind (CDN) handles layout utilities; this file holds
-   the colour tokens and component styling.
-   ========================================================= */
-
-/* ---------- Colour tokens (light) ---------- */
 :root {
   --bg: #e6ebf6;
   --surface: #ffffff;
@@ -29,7 +20,6 @@
   --shadow-sm: 0 6px 18px -8px rgba(20, 40, 90, .25);
 }
 
-/* ---------- Colour tokens (dark: follows the system) ---------- */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #070c1a;
@@ -52,7 +42,6 @@
   }
 }
 
-/* ---------- Colour tokens (dark: manual toggle) ---------- */
 :root[data-theme="dark"] {
   --bg: #070c1a;
   --surface: #111a2f;
@@ -73,7 +62,6 @@
   color-scheme: dark;
 }
 
-/* ---------- Base ---------- */
 [hidden] { display: none !important; }
 html, body { height: 100%; }
 body {
@@ -89,7 +77,6 @@ body {
   body { padding: 24px; }
 }
 
-/* Side gutter that also clears a phone's side system bars */
 .gutter {
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -108,7 +95,6 @@ body {
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 
-/* ---------- Header ---------- */
 .app-header { background: var(--header-bg); color: var(--header-fg); }
 .header-sub { color: var(--header-sub); }
 .logo { background: #ffffff; color: #1d4ed8; }
@@ -129,7 +115,6 @@ body {
   100% { box-shadow: 0 0 0 0 rgba(25, 165, 111, 0); }
 }
 
-/* ---------- Quick-reply chips ---------- */
 .chips-band { background: var(--surface); border-bottom: 1px solid var(--line); }
 .chips-rail { scrollbar-width: none; }
 .chips-rail::-webkit-scrollbar { display: none; }
@@ -144,7 +129,6 @@ body {
 .chip-inline { background: var(--accent-soft); border: 1px solid transparent; color: var(--accent); }
 .chip-inline:hover { border-color: var(--accent); }
 
-/* ---------- Chat area ---------- */
 .chat-bg {
   background-color: var(--chat);
   background-image: radial-gradient(var(--dot) 1px, transparent 1px);
@@ -158,7 +142,6 @@ body {
   :root:not([data-theme="light"]) .brand-mark { color: #0b1226; }
 }
 
-/* Welcome topic cards */
 .topic {
   display: flex;
   align-items: flex-start;
@@ -184,7 +167,6 @@ body {
 .topic-title { font-weight: 600; font-size: 15px; }
 .topic-desc { color: var(--muted); font-size: 13px; line-height: 1.4; }
 
-/* Bubbles */
 .bubble-user {
   background: var(--user);
   color: var(--user-fg);
@@ -199,7 +181,6 @@ body {
   box-shadow: 0 1px 2px rgba(15, 30, 70, .06);
 }
 
-/* Lists and steps inside bot bubbles */
 .list-panel {
   margin-top: 12px;
   padding: 2px 12px;
@@ -218,7 +199,6 @@ body {
 .badge.closed { background: var(--line); color: var(--muted); }
 .step-num { background: var(--accent-soft); color: var(--accent); }
 
-/* Typing indicator */
 .dot {
   width: 7px; height: 7px; border-radius: 9999px;
   background: var(--muted);
@@ -231,14 +211,12 @@ body {
   30% { transform: translateY(-5px); opacity: 1; }
 }
 
-/* Message entrance */
 .msg-in { animation: rise .24s ease-out; }
 @keyframes rise {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
 
-/* Scroll-to-latest button */
 .to-bottom {
   position: absolute;
   right: max(16px, env(safe-area-inset-right, 0px));
@@ -250,7 +228,6 @@ body {
 }
 .to-bottom:hover { background: var(--accent-soft); }
 
-/* ---------- Input bar ---------- */
 .input-band { background: var(--surface); border-top: 1px solid var(--line); }
 .composer {
   background: var(--chat);
