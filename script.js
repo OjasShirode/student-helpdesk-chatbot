@@ -1,14 +1,6 @@
-/* =========================================================
-   Skillinf Student Helpdesk: chat logic
-   1. Sample data (edit this with your real details)
-   2. Keyword matching (intent detection)
-   3. Mock backend: respond(query) returns a structured reply
-   4. UI rendering and event wiring
-   ========================================================= */
 (function () {
   'use strict';
 
-  /* ---------- 1. Sample data ---------- */
   const d = (y, m, day) => new Date(y, m - 1, day);
 
   const DEADLINES = [
@@ -47,7 +39,6 @@
 
   const MENU_CHIPS = ['Courses', 'Internships', 'Upcoming Deadlines', 'Certificate Process'];
 
-  /* ---------- Date helpers ---------- */
   const fmtDate = (dt) => dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   const startOfDay = (dt) => new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
   const daysLeft = (dt) => Math.round((startOfDay(dt) - startOfDay(new Date())) / 86400000);
@@ -59,8 +50,6 @@
     return { text: n + (n === 1 ? ' day left' : ' days left'), cls: n <= 14 ? 'soon' : '' };
   }
 
-  /* ---------- 2. Intent matching ---------- */
-  // Keywords match as word prefixes, so "certif" covers certificate, certification and even "certifcate".
   const INTENTS = [
     { id: 'deadlines',    words: ['deadline', 'last date', 'due', 'closing', 'closes', 'cutoff', 'cut off', 'submit by', 'dates', 'date', 'schedule', 'timeline'] },
     { id: 'internships',  words: ['intern', 'placement', 'stipend', 'work experience', 'job', 'eligib'] },
@@ -73,9 +62,12 @@
     if (/^\s*(hi|hello|hey|hii|namaste|good (morning|afternoon|evening))\b/.test(text)) return 'greeting';
     if (/\b(thanks|thank you|thx|thankyou)\b/.test(text)) return 'thanks';
 
+    const dateBonus = /\b(deadline|last date|due|closing|closes|cutoff|cut off|submit by)/.test(text) ? 2 : 0;
+
     let best = null, bestScore = 0;
     for (const intent of INTENTS) {
-      const score = intent.words.reduce((n, w) => n + (new RegExp('\\b' + w).test(text) ? 1 : 0), 0);
+      let score = intent.words.reduce((n, w) => n + (new RegExp('\\b' + w).test(text) ? 1 : 0), 0);
+      if (intent.id === 'deadlines') score += dateBonus;
       if (score > bestScore) { best = intent.id; bestScore = score; }
     }
     if (best) return best;
@@ -83,7 +75,6 @@
     return 'fallback';
   }
 
-  /* ---------- 3. Mock backend ---------- */
   function respond(query) {
     const q = query.toLowerCase();
     switch (detectIntent(query)) {
@@ -128,12 +119,10 @@
     }
   }
 
-  /* ---------- 4. UI ---------- */
   const svg = (inner) =>
     '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + '</svg>';
 
-  // Static, trusted markup only (never user text).
   const ICONS = {
     book: svg('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'),
     briefcase: svg('<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'),
@@ -195,7 +184,6 @@
     return a;
   }
 
-  /* ----- Messages ----- */
   function addUser(text) {
     const row = el('div', 'msg-in flex flex-col items-end gap-1');
     row.append(
@@ -267,7 +255,6 @@
     statusText.textContent = IDLE_STATUS;
   }
 
-  /* ----- Input state ----- */
   function syncSend() { sendBtn.disabled = busy || input.value.trim().length === 0; }
   function syncCounter() {
     const n = input.value.length;
@@ -276,7 +263,6 @@
   }
   function setBusy(v) { busy = v; syncSend(); }
 
-  /* ----- Main handler ----- */
   function sendMessage(raw) {
     const text = (raw || '').trim().slice(0, MAX);
     if (!text || busy) return;
@@ -308,29 +294,27 @@
     updateToBottom();
   }
 
-  /* ----- Theme toggle ----- */
   function isDark() {
     const t = root.getAttribute('data-theme');
     if (t) return t === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
   function syncThemeIcon() {
-    sunIcon.hidden = !isDark();   // dark now: show the sun (switch to light)
-    moonIcon.hidden = isDark();   // light now: show the moon (switch to dark)
+    sunIcon.hidden = !isDark();
+    moonIcon.hidden = isDark();
   }
   try {
     const saved = localStorage.getItem('skillinf-theme');
     if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
-  } catch (e) { /* storage unavailable: follow the system theme */ }
+  } catch (e) { }
 
   themeBtn.addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
-    try { localStorage.setItem('skillinf-theme', next); } catch (e) { /* ignore */ }
+    try { localStorage.setItem('skillinf-theme', next); } catch (e) { }
     syncThemeIcon();
   });
 
-  /* ----- Wire up ----- */
   TOPICS.forEach((t) => {
     const card = el('button', 'topic');
     card.type = 'button';
